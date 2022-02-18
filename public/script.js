@@ -1,7 +1,10 @@
 const socket = io('/')
 const videoGrid = document.getElementById('video-grid')
-const myPeer = new Peer(undefined)
+const myPeer = new Peer()
 const myVideo = document.createElement('video')
+myVideo.setAttributeNode(document.createAttribute('autoplay'));
+myVideo.setAttributeNode(document.createAttribute('playsinline'));
+myVideo.setAttributeNode(document.createAttribute('controls'));
 myVideo.muted = true
 const peers = {}
 
@@ -12,8 +15,12 @@ navigator.mediaDevices.getUserMedia({
     addVideoStream(myVideo, stream)
 
     myPeer.on('call', call => {
+        peers[call.peer] = call //added this
         call.answer(stream)
         const video = document.createElement('video')
+        video.setAttributeNode(document.createAttribute('autoplay'));
+        video.setAttributeNode(document.createAttribute('playsinline'));
+        video.setAttributeNode(document.createAttribute('controls'));
         call.on('stream', userVideoStream => {
             addVideoStream(video, userVideoStream)
         })
@@ -35,6 +42,9 @@ myPeer.on('open', id => {
 function connectToNewUser(userId, stream) {
     const call = myPeer.call(userId, stream)
     const video = document.createElement('video')
+    video.setAttributeNode(document.createAttribute('autoplay'));
+    video.setAttributeNode(document.createAttribute('playsinline'));
+    video.setAttributeNode(document.createAttribute('controls'));
     call.on('stream', userVideoStream => {
         addVideoStream(video, userVideoStream)
     })
